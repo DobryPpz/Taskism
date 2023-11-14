@@ -24,6 +24,6 @@ int list_prepend(List *list, void *data);
 void *list_get(List *list, void *key);
 int list_shift(List *list, void **data);
 int list_pop(List *list, void **data);
-int list_remove(List *list, void *key);
+int list_remove(List *list, void *key, void **data);
 
 #endif

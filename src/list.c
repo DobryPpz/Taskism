@@ -57,7 +57,7 @@ void *list_get(List *list, void *key){
         return NULL;
     }
     Element *traverser = list->head;
-    while(traverser!=NULL && list->cmp(traverser,key)!=0){
+    while(traverser!=NULL && list->cmp(traverser->data,key)!=0){
         traverser = traverser->next;
     }
     if(traverser!=NULL){
@@ -109,6 +109,33 @@ int list_pop(List *list, void **data){
     list->length -= 1;
     return 0;
 }
-int list_remove(List *list, void *key){
-    
+int list_remove(List *list, void *key, void **data){
+    if(list==NULL || list->head==NULL){
+        return -1;
+    }
+    if(list->cmp(list->head->data,key)==0){
+        int ret = list_shift(list,(void**)&data);
+        list->destroy(data);
+        return ret;
+    }
+    if(list->cmp(list->tail->data,key)==0){
+        int ret = list_pop(list,(void**)&data);
+        list->destroy(data);
+        return ret;
+    }
+    Element *traverser = list->head;
+    Element *old_element = NULL;
+    while(traverser!=NULL && list->cmp(traverser->next->data,key)!=0){
+        traverser = traverser->next;
+    }
+    if(traverser==NULL){
+        return -1;
+    }
+    old_element = traverser->next;
+    traverser->next = traverser->next->next;
+    old_element->next = NULL;
+    *data = old_element->data;
+    free(old_element);
+    list->length -= 1;
+    return 0;
 }
