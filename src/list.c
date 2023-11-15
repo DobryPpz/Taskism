@@ -139,3 +139,6 @@ int list_remove(List *list, void *key, void **data){
     list->length -= 1;
     return 0;
 }
+int is_empty(List *list){
+    return list->head==NULL;
+}

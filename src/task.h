@@ -11,6 +11,7 @@ typedef struct Task{
 typedef struct ToDoList{
     List *tasklist;
     char *db_path;
+    int last_id;
 }ToDoList;
 
 void task_destroy(void *task);
@@ -20,11 +21,10 @@ void todo_destroy(ToDoList *todo);
 void todo_run(ToDoList *todo);
 void todo_add(ToDoList *todo);
 void todo_remove(ToDoList *todo, int id);
-void todo_shift(ToDoList *todo);
-void todo_pop(ToDoList *todo);
 void todo_change(ToDoList *todo, int id, int completed);
 void todo_view(ToDoList *todo);
 void todo_commit(ToDoList *todo);
+void todo_readin(ToDoList *todo);
 void todo_help();
 
 #endif
