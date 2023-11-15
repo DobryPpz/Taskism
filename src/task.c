@@ -92,12 +92,13 @@ void todo_add(ToDoList *todo){
         return;
     }
     todo->last_id += 1;
+    printf("Task added successfully\n");
 }
 void todo_remove(ToDoList *todo, int id){
     Task *to_remove = NULL;
     int ret = list_remove(todo->tasklist,&id,(void**)&to_remove);
     if(ret==0){
-        printf("Element successfully deleted\n");
+        printf("Element deleted successfully\n");
         task_destroy(to_remove);
     }
     else{
@@ -111,9 +112,11 @@ void todo_change(ToDoList *todo, int id, int completed){
     }
     else{
         to_change->completed = completed;
+        printf("Marked task %d as %s\n",id,completed ? "done" : "not done");
     }
 }
 void todo_view(ToDoList *todo){
+    printf("\033[2J\033[H");
     if(is_empty(todo->tasklist)){
         todo_readin(todo);
     }
@@ -141,6 +144,7 @@ void todo_commit(ToDoList *todo){
         element = element->next;
     }
     fclose(db);
+    printf("List saved successfully\n");
 }
 void todo_readin(ToDoList *todo){
     Task *to_add = NULL;
