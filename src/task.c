@@ -24,6 +24,7 @@ int todo_init(ToDoList *todo, void (*destroy)(void*), char *db_path, int (*cmp)(
     todo->tasklist = tasklist;
     todo->db_path = db_path;
     todo->last_id = 1;
+    todo->has_read = 0;
     return 0;
 }
 void todo_destroy(ToDoList *todo){
@@ -76,6 +77,23 @@ void todo_run(ToDoList *todo){
             else{
                 sscanf(first_part,"%d",&param);
                 todo_change(todo,param,0);
+            }
+        }
+        else if(strcmp(first_part,"first")==0){
+            first_part = strtok(NULL," \t\n");
+            if(first_part==NULL){
+                printf("Done or not done first?\n");
+            }
+            else{
+                if(strcmp(first_part,"done")==0){
+                    todo_group(todo,1);
+                }
+                else if(strcmp(first_part,"todo")==0){
+                    todo_group(todo,0);
+                }
+                else{
+                    printf("wrong parameter\n");
+                }
             }
         }
         else if(strcmp(first_part,"help")==0){
@@ -131,7 +149,7 @@ void todo_change(ToDoList *todo, int id, int completed){
 }
 void todo_view(ToDoList *todo){
     printf("\033[2J\033[H");
-    if(is_empty(todo->tasklist)){
+    if(todo->has_read==0){
         todo_readin(todo);
     }
     Element *element = todo->tasklist->head;
@@ -189,21 +207,55 @@ void todo_readin(ToDoList *todo){
         printf("Succesfully read in a task\n");
         todo->last_id += 1;
     }
+    todo->has_read = 1;
     fclose(db);
 }
 void todo_group(ToDoList *todo, int first){
     if(is_empty(todo->tasklist)){
         return;
     }
-    List *stack = NULL;
-    if((stack=(List*)malloc(sizeof(List)))==NULL){
+    List *done = NULL;
+    List *not_done = NULL;
+    void *data = NULL;
+    Task *removed = NULL;
+    if((done=(List*)malloc(sizeof(List)))==NULL){
         return;
     }
-    list_init(stack,NULL,NULL);
-    Element *slower = todo->tasklist->head;
-    Element *faster = todo->tasklist->head;
-
-    list_destroy(stack);
+    if((not_done=(List*)malloc(sizeof(List)))==NULL){
+        free(done);
+        return;
+    }
+    list_init(done,NULL,NULL);
+    list_init(not_done,NULL,NULL);
+    while(list_shift(todo->tasklist,(void**)&data)==0){
+        removed = (Task*)data;
+        if(removed->completed){
+            list_append(done,removed);
+        }
+        else{
+            list_append(not_done,removed);
+        }
+    }
+    if(first==1){
+        while(list_shift(done,(void**)&data)==0){
+            list_append(todo->tasklist,data);
+        }
+        while(list_shift(not_done,(void**)&data)==0){
+            list_append(todo->tasklist,data);
+        }
+    }
+    else{
+        while(list_shift(not_done,(void**)&data)==0){
+            list_append(todo->tasklist,data);
+        }
+        while(list_shift(done,(void**)&data)==0){
+            list_append(todo->tasklist,data);
+        }
+    }
+    list_destroy(not_done);
+    list_destroy(done);
+    free(not_done);
+    free(done);
 }
 void todo_help(){
     printf("Type:\n");
