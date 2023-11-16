@@ -9,7 +9,7 @@ void list_init(List *list, void (*destroy)(void*), int (*cmp)(void*, void*)){
 }
 void list_destroy(List *list){
     void *data = NULL;
-    while(list_pop(list,(void**)&data)==0){
+    while(list_shift(list,(void**)&data)==0){
         if(list->destroy!=NULL){
             list->destroy(data);
         }
