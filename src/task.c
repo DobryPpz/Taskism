@@ -50,18 +50,33 @@ void todo_run(ToDoList *todo){
         }
         else if(strcmp(first_part,"remove")==0){
             first_part = strtok(NULL," \t\n");
-            sscanf(first_part,"%d",&param);
-            todo_remove(todo,param);
+            if(first_part==NULL){
+                printf("What to remove?\n");
+            }
+            else{
+                sscanf(first_part,"%d",&param);
+                todo_remove(todo,param);
+            }
         }
         else if(strcmp(first_part,"done")==0){
             first_part = strtok(NULL," \t\n");
-            sscanf(first_part,"%d",&param);
-            todo_change(todo,param,1);
+            if(first_part==NULL){
+                printf("Which one done?\n");
+            }
+            else{
+                sscanf(first_part,"%d",&param);
+                todo_change(todo,param,1);
+            }
         }
         else if(strcmp(first_part,"undo")==0){
             first_part = strtok(NULL," \t\n");
-            sscanf(first_part,"%d",&param);
-            todo_change(todo,param,0);
+            if(first_part==NULL){
+                printf("Which one to undo?\n");
+            }
+            else{
+                sscanf(first_part,"%d",&param);
+                todo_change(todo,param,0);
+            }
         }
         else if(strcmp(first_part,"help")==0){
             todo_help();
@@ -70,7 +85,6 @@ void todo_run(ToDoList *todo){
             printf("Wrong command!\n");
         }
         memset(command,0,128);
-        memset(first_part,0,128);
     }
 }
 void todo_add(ToDoList *todo){
@@ -177,14 +191,29 @@ void todo_readin(ToDoList *todo){
     }
     fclose(db);
 }
+void todo_group(ToDoList *todo, int first){
+    if(is_empty(todo->tasklist)){
+        return;
+    }
+    List *stack = NULL;
+    if((stack=(List*)malloc(sizeof(List)))==NULL){
+        return;
+    }
+    list_init(stack,NULL,NULL);
+    Element *slower = todo->tasklist->head;
+    Element *faster = todo->tasklist->head;
+
+    list_destroy(stack);
+}
 void todo_help(){
     printf("Type:\n");
-    printf("list     ===> to see your todo list\n");
-    printf("commit   ===> to save changes\n");
-    printf("add      ===> to add a new todo item\n");
-    printf("remove x ===> to remove item x from todo list\n");
-    printf("done x   ===> to mark item x as done\n");
-    printf("undo x   ===> to mark item x as not done\n");
-    printf("help     ===> to see the list of available commands\n");
-    printf("Ctrl+d   ===> to exit\n");
+    printf("list              ===> to see your todo list\n");
+    printf("commit            ===> to save changes\n");
+    printf("add               ===> to add a new todo item\n");
+    printf("remove x          ===> to remove item x from todo list\n");
+    printf("done x            ===> to mark item x as done\n");
+    printf("undo x            ===> to mark item x as not done\n");
+    printf("first [done|todo] ===> to display done or todo first");
+    printf("help              ===> to see the list of available commands\n");
+    printf("Ctrl+d            ===> to exit\n");
 }
