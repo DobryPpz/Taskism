@@ -96,6 +96,11 @@ void todo_run(ToDoList *todo){
                 }
             }
         }
+        else if(strcmp(first_part,"readin")==0){
+            todo_clear(todo);
+            todo_readin(todo);
+            todo_view(todo);
+        }
         else if(strcmp(first_part,"help")==0){
             todo_help();
         }
@@ -257,6 +262,10 @@ void todo_group(ToDoList *todo, int first){
     free(not_done);
     free(done);
 }
+void todo_clear(ToDoList *todo){
+    list_clear(todo->tasklist);
+    todo->last_id = 1;
+}
 void todo_help(){
     printf("Type:\n");
     printf("list              ===> to see your todo list\n");
@@ -265,7 +274,8 @@ void todo_help(){
     printf("remove x          ===> to remove item x from todo list\n");
     printf("done x            ===> to mark item x as done\n");
     printf("undo x            ===> to mark item x as not done\n");
-    printf("first [done|todo] ===> to display done or todo first");
+    printf("first [done|todo] ===> to display done or todo first\n");
+    printf("readin            ===> to read in saved todo list again\n");
     printf("help              ===> to see the list of available commands\n");
     printf("Ctrl+d            ===> to exit\n");
 }

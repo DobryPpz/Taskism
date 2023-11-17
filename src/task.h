@@ -27,6 +27,7 @@ void todo_view(ToDoList *todo);
 void todo_commit(ToDoList *todo);
 void todo_readin(ToDoList *todo);
 void todo_group(ToDoList *todo, int first);
+void todo_clear(ToDoList *todo);
 void todo_help();
 
 #endif
