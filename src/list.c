@@ -133,10 +133,10 @@ int list_remove(List *list, void *key, void **data){
     }
     Element *traverser = list->head;
     Element *old_element = NULL;
-    while(traverser!=NULL && list->cmp(traverser->next->data,key)!=0){
+    while(traverser!=NULL && traverser->next!=NULL && list->cmp(traverser->next->data,key)!=0){
         traverser = traverser->next;
     }
-    if(traverser==NULL){
+    if(traverser==NULL || traverser->next==NULL){
         return -1;
     }
     old_element = traverser->next;

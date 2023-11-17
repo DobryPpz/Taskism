@@ -104,6 +104,9 @@ void todo_run(ToDoList *todo){
         else if(strcmp(first_part,"help")==0){
             todo_help();
         }
+        else if(strcmp(first_part,"clear")==0){
+            todo_clear(todo);
+        }
         else{
             printf("Wrong command!\n");
         }
@@ -270,6 +273,7 @@ void todo_help(){
     printf("Type:\n");
     printf("list              ===> to see your todo list\n");
     printf("commit            ===> to save changes\n");
+    printf("clear             ===> to clear current list\n");
     printf("add               ===> to add a new todo item\n");
     printf("remove x          ===> to remove item x from todo list\n");
     printf("done x            ===> to mark item x as done\n");
