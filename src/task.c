@@ -40,6 +40,10 @@ void todo_run(ToDoList *todo){
     while(fgets(command,128,stdin)!=NULL){
         command[127] = 0;
         first_part = strtok(command," \t\n");
+        if(first_part==NULL){
+            memset(command,0,128);
+            continue;
+        }
         if(strcmp(first_part,"list")==0){
             todo_view(todo);
         }
@@ -106,6 +110,10 @@ void todo_run(ToDoList *todo){
         }
         else if(strcmp(first_part,"clear")==0){
             todo_clear(todo);
+        }
+        else if(strcmp(first_part,"renumerate")==0){
+            todo_renumerate(todo);
+            todo_view(todo);
         }
         else{
             printf("Wrong command!\n");
@@ -269,6 +277,18 @@ void todo_clear(ToDoList *todo){
     list_clear(todo->tasklist);
     todo->last_id = 1;
 }
+void todo_renumerate(ToDoList *todo){
+    todo->last_id = 1;
+    List *tasks = todo->tasklist;
+    Task *task = NULL;
+    Element *element = tasks->head;
+    while(element!=NULL){
+        task = (Task*)element->data;
+        task->id = todo->last_id;
+        todo->last_id += 1;
+        element = element->next;
+    }
+}
 void todo_help(){
     printf("Type:\n");
     printf("list              ===> to see your todo list\n");
@@ -280,6 +300,7 @@ void todo_help(){
     printf("undo x            ===> to mark item x as not done\n");
     printf("first [done|todo] ===> to display done or todo first\n");
     printf("readin            ===> to read in saved todo list again\n");
+    printf("renumerate        ===> to renumber the tasks so they start at 1\n");
     printf("help              ===> to see the list of available commands\n");
     printf("Ctrl+d            ===> to exit\n");
 }
