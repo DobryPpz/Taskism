@@ -16,6 +16,14 @@ void list_destroy(List *list){
     }
     memset(list,0,sizeof(List));
 }
+void list_clear(List *list){
+    void *data = NULL;
+    while(list_shift(list,(void**)&data)==0){
+        if(list->destroy!=NULL){
+            list->destroy(data);
+        }
+    }
+}
 int list_append(List *list, void *data){
     Element *new_element = NULL;
     if((new_element=(Element*)malloc(sizeof(Element)))==NULL){

@@ -19,6 +19,7 @@ typedef struct List{
 
 void list_init(List *list, void (*destroy)(void*), int (*cmp)(void*, void*));
 void list_destroy(List *list);
+void list_clear(List *list);
 int list_append(List *list, void *data);
 int list_prepend(List *list, void *data);
 void *list_get(List *list, void *key);
