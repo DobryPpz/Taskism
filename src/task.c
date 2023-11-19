@@ -292,12 +292,12 @@ void todo_renumerate(ToDoList *todo){
 void todo_help(){
     printf("Type:\n");
     printf("list              ===> to see your todo list\n");
+    printf("done x            ===> to mark item x as done\n");
+    printf("undo x            ===> to mark item x as not done\n");
     printf("commit            ===> to save changes\n");
     printf("clear             ===> to clear current list\n");
     printf("add               ===> to add a new todo item\n");
     printf("remove x          ===> to remove item x from todo list\n");
-    printf("done x            ===> to mark item x as done\n");
-    printf("undo x            ===> to mark item x as not done\n");
     printf("first [done|todo] ===> to display done or todo first\n");
     printf("readin            ===> to read in saved todo list again\n");
     printf("renumerate        ===> to renumber the tasks so they start at 1\n");
