@@ -140,14 +140,16 @@ void todo_add(ToDoList *todo){
         return;
     }
     todo->last_id += 1;
+    todo_view(todo);
     printf("Task added successfully\n");
 }
 void todo_remove(ToDoList *todo, int id){
     Task *to_remove = NULL;
     int ret = list_remove(todo->tasklist,&id,(void**)&to_remove);
     if(ret==0){
-        printf("Element deleted successfully\n");
         task_destroy(to_remove);
+        todo_view(todo);
+        printf("Element deleted successfully\n");
     }
     else{
         printf("Could not delete task\n");
@@ -160,6 +162,7 @@ void todo_change(ToDoList *todo, int id, int completed){
     }
     else{
         to_change->completed = completed;
+        todo_view(todo);
         printf("Marked task %d as %s\n",id,completed ? "done" : "not done");
     }
 }
@@ -272,6 +275,7 @@ void todo_group(ToDoList *todo, int first){
     list_destroy(done);
     free(not_done);
     free(done);
+    todo_view(todo);
 }
 void todo_clear(ToDoList *todo){
     list_clear(todo->tasklist);
