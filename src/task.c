@@ -63,6 +63,36 @@ void todo_run(ToDoList *todo){
                 todo_remove(todo,param);
             }
         }
+        else if(strcmp(first_part,"high")==0){
+            first_part = strtok(NULL," \t\n");
+            if(first_part==NULL){
+                printf("To which task set high priority?\n");
+            }
+            else{
+                sscanf(first_part,"%d",&param);
+                todo_priority(todo,param,HIGH);
+            }
+        }
+        else if(strcmp(first_part,"medium")==0){
+            first_part = strtok(NULL," \t\n");
+            if(first_part==NULL){
+                printf("To which task set medium priority?\n");
+            }
+            else{
+                sscanf(first_part,"%d",&param);
+                todo_priority(todo,param,MEDIUM);
+            }
+        }
+        else if(strcmp(first_part,"low")==0){
+            first_part = strtok(NULL," \t\n");
+            if(first_part==NULL){
+                printf("To which task set low priority?\n");
+            }
+            else{
+                sscanf(first_part,"%d",&param);
+                todo_priority(todo,param,LOW);
+            }
+        }
         else if(strcmp(first_part,"done")==0){
             first_part = strtok(NULL," \t\n");
             if(first_part==NULL){
@@ -136,6 +166,7 @@ void todo_add(ToDoList *todo){
     memmove(to_add->description,description,strlen(description));
     to_add->completed = 0;
     to_add->id = todo->last_id;
+    to_add->priority = LOW;
     if(list_append(todo->tasklist,to_add)!=0){
         return;
     }
@@ -166,6 +197,18 @@ void todo_change(ToDoList *todo, int id, int completed){
         printf("Marked task %d as %s\n",id,completed ? "done" : "not done");
     }
 }
+void todo_priority(ToDoList *todo, int id, int priority){
+    Task *to_change = (Task*)list_get(todo->tasklist,&id);
+    if(to_change==NULL){
+        printf("No such task\n");
+    }
+    else{
+        to_change->priority = priority;
+        todo_view(todo);
+        printf("Marked task %d as having %s priority\n",id,
+            priority==HIGH ? "high" : (priority==MEDIUM ? "medium" : "low"));
+    }
+}
 void todo_view(ToDoList *todo){
     printf("\033[2J\033[H");
     if(todo->has_read==0){
@@ -175,7 +218,10 @@ void todo_view(ToDoList *todo){
     Task *task = NULL;
     while(element!=NULL){
         task = (Task*)element->data;
-        printf("%s %d:\n\t%s",(task->completed ? "DONE":"TODO"),task->id,task->description);
+        printf("%s %d (%s priority):\n\t%s",(task->completed ? "DONE":"TODO"),
+            task->id,
+            (task->priority==HIGH ? "high" : (task->priority==MEDIUM ? "medium" : "low")),
+            task->description);
         element = element->next;
     }
 }
@@ -191,7 +237,7 @@ void todo_commit(ToDoList *todo){
     Task *task = NULL;
     while(element!=NULL){
         task = (Task*)element->data;
-        fprintf(db,"%s%d\n",task->description,task->completed);
+        fprintf(db,"%s%d\n%d\n",task->description,task->completed,task->priority);
         element = element->next;
     }
     fclose(db);
@@ -200,30 +246,35 @@ void todo_commit(ToDoList *todo){
 void todo_readin(ToDoList *todo){
     Task *to_add = NULL;
     char description[256] = {0};
-    char id_string[256] = {0};
+    char completed_string[256] = {0};
+    char priority_string[256] = {0};
+    int priority;
     int completed;
-    int id;
     FILE *db = NULL;
     if((db=fopen(todo->db_path,"r"))==NULL){
         printf("Could not open database\n");
         return;
     }
-    while(fgets(description,256,db)!=NULL && fgets(id_string,256,db)!=NULL){
+    while(fgets(description,256,db)!=NULL && 
+          fgets(completed_string,256,db)!=NULL &&
+          fgets(priority_string,256,db)!=NULL){
         description[255] = 0;
-        id_string[255] = 0;
-        sscanf(id_string,"%d",&id);
+        completed_string[255] = 0;
+        priority_string[255] = 0;
+        sscanf(completed_string,"%d",&completed);
+        sscanf(priority_string,"%d",&priority);
         to_add = (Task*)malloc(sizeof(Task));
         if(to_add==NULL){
             return;
         }
         memset(to_add->description,0,256);
         memmove(to_add->description,description,strlen(description));
-        to_add->completed = id;
+        to_add->completed = completed;
         to_add->id = todo->last_id;
+        to_add->priority = priority;
         if(list_append(todo->tasklist,to_add)!=0){
             return;
         }
-        printf("Succesfully read in a task\n");
         todo->last_id += 1;
     }
     todo->has_read = 1;
@@ -303,6 +354,9 @@ void todo_help(){
     printf("add               ===> to add a new todo item\n");
     printf("remove x          ===> to remove item x from todo list\n");
     printf("first [done|todo] ===> to display done or todo first\n");
+    printf("high x            ===> to mark item x with high priority\n");
+    printf("medium x          ===> to mark item x with medium priority\n");
+    printf("low x             ===> to mark item x with low priority\n");
     printf("readin            ===> to read in saved todo list again\n");
     printf("renumerate        ===> to renumber the tasks so they start at 1\n");
     printf("help              ===> to see the list of available commands\n");

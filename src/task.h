@@ -2,10 +2,13 @@
 #define TASK_H_
 #include "list.h"
 
+typedef enum Priority{HIGH,MEDIUM,LOW} Priority;
+
 typedef struct Task{
     char description[256];
     int completed;
     int id;
+    Priority priority;
 }Task;
 
 typedef struct ToDoList{
@@ -23,6 +26,7 @@ void todo_run(ToDoList *todo);
 void todo_add(ToDoList *todo);
 void todo_remove(ToDoList *todo, int id);
 void todo_change(ToDoList *todo, int id, int completed);
+void todo_priority(ToDoList *todo, int id, int priority);
 void todo_view(ToDoList *todo);
 void todo_commit(ToDoList *todo);
 void todo_readin(ToDoList *todo);
