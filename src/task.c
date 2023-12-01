@@ -63,6 +63,23 @@ void todo_run(ToDoList *todo){
                 todo_remove(todo,param);
             }
         }
+        else if(strcmp(first_part,"priority")==0){
+            first_part = strtok(NULL," \t\n");
+            if(first_part==NULL){
+                printf("In what order?\n");
+            }
+            else{
+                if(strcmp(first_part,"asc")==0){
+                    todo_sort_priority(todo,ASC);
+                }
+                else if(strcmp(first_part,"dsc")==0){
+                    todo_sort_priority(todo,DSC);
+                }
+                else{
+                    printf("Wrong order\n");
+                }
+            }
+        }
         else if(strcmp(first_part,"high")==0){
             first_part = strtok(NULL," \t\n");
             if(first_part==NULL){
@@ -344,21 +361,83 @@ void todo_renumerate(ToDoList *todo){
         element = element->next;
     }
 }
+void todo_sort_priority(ToDoList *todo, Order order){
+    List *lows = NULL;
+    List *mediums = NULL;
+    List *highs = NULL;
+    List *tasklist = todo->tasklist;
+    Task *task = NULL;
+    if((lows=(List*)malloc(sizeof(List)))==NULL){
+        return;
+    }
+    if((mediums=(List*)malloc(sizeof(List)))==NULL){
+        free(lows);
+        return;
+    }
+    if((highs=(List*)malloc(sizeof(List)))==NULL){
+        free(lows);
+        free(mediums);
+        return;
+    }
+    list_init(lows,NULL,NULL);
+    list_init(mediums,NULL,NULL);
+    list_init(highs,NULL,NULL);
+    while(list_shift(tasklist,(void**)&task)==0){
+        switch(task->priority){
+            case LOW:
+                list_append(lows,task);
+                break;
+            case MEDIUM:
+                list_append(mediums,task);
+                break;
+            case HIGH:
+                list_append(highs,task);
+                break;
+        }
+    }
+    while(list_shift(mediums,(void**)&task)==0){
+        list_append(tasklist,task);
+    }
+    if(order==ASC){
+        while(list_shift(lows,(void**)&task)==0){
+            list_prepend(tasklist,task);
+        }
+        while(list_shift(highs,(void**)&task)==0){
+            list_append(tasklist,task);
+        }
+    }
+    else{
+        while(list_shift(lows,(void**)&task)==0){
+            list_append(tasklist,task);
+        }
+        while(list_shift(highs,(void**)&task)==0){
+            list_prepend(tasklist,task);
+        }
+    }
+    list_destroy(lows);
+    list_destroy(mediums);
+    list_destroy(highs);
+    free(lows);
+    free(mediums);
+    free(highs);
+    todo_view(todo);
+}
 void todo_help(){
     printf("Type:\n");
-    printf("list              ===> to see your todo list\n");
-    printf("done x            ===> to mark item x as done\n");
-    printf("undo x            ===> to mark item x as not done\n");
-    printf("commit            ===> to save changes\n");
-    printf("clear             ===> to clear current list\n");
-    printf("add               ===> to add a new todo item\n");
-    printf("remove x          ===> to remove item x from todo list\n");
-    printf("first [done|todo] ===> to display done or todo first\n");
-    printf("high x            ===> to mark item x with high priority\n");
-    printf("medium x          ===> to mark item x with medium priority\n");
-    printf("low x             ===> to mark item x with low priority\n");
-    printf("readin            ===> to read in saved todo list again\n");
-    printf("renumerate        ===> to renumber the tasks so they start at 1\n");
-    printf("help              ===> to see the list of available commands\n");
-    printf("Ctrl+d            ===> to exit\n");
+    printf("list               ===> to see your todo list\n");
+    printf("done x             ===> to mark item x as done\n");
+    printf("undo x             ===> to mark item x as not done\n");
+    printf("commit             ===> to save changes\n");
+    printf("clear              ===> to clear current list\n");
+    printf("add                ===> to add a new todo item\n");
+    printf("remove x           ===> to remove item x from todo list\n");
+    printf("first [done|todo]  ===> to display done or todo first\n");
+    printf("priority [asc|dsc] ===> to sort tasks by priority\n");
+    printf("high x             ===> to mark item x with high priority\n");
+    printf("medium x           ===> to mark item x with medium priority\n");
+    printf("low x              ===> to mark item x with low priority\n");
+    printf("readin             ===> to read in saved todo list again\n");
+    printf("renumerate         ===> to renumber the tasks so they start at 1\n");
+    printf("help               ===> to see the list of available commands\n");
+    printf("Ctrl+d             ===> to exit\n");
 }

@@ -3,6 +3,7 @@
 #include "list.h"
 
 typedef enum Priority{HIGH,MEDIUM,LOW} Priority;
+typedef enum Order{ASC,DSC} Order;
 
 typedef struct Task{
     char description[256];
@@ -33,6 +34,7 @@ void todo_readin(ToDoList *todo);
 void todo_group(ToDoList *todo, int first);
 void todo_clear(ToDoList *todo);
 void todo_renumerate(ToDoList *todo);
+void todo_sort_priority(ToDoList *todo, Order order);
 void todo_help();
 
 #endif
