@@ -4,10 +4,11 @@
 
 typedef enum Priority{HIGH,MEDIUM,LOW} Priority;
 typedef enum Order{ASC,DSC} Order;
+typedef enum Status{TODO,DONE} Status;
 
 typedef struct Task{
     char description[256];
-    int completed;
+    Status status;
     int id;
     Priority priority;
 }Task;
@@ -26,7 +27,7 @@ void todo_destroy(ToDoList *todo);
 void todo_run(ToDoList *todo);
 void todo_add(ToDoList *todo);
 void todo_remove(ToDoList *todo, int id);
-void todo_change(ToDoList *todo, int id, int completed);
+void todo_change(ToDoList *todo, int id, Status status);
 void todo_priority(ToDoList *todo, int id, int priority);
 void todo_view(ToDoList *todo);
 void todo_commit(ToDoList *todo);

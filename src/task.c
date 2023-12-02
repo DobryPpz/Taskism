@@ -137,10 +137,10 @@ void todo_run(ToDoList *todo){
             }
             else{
                 if(strcmp(first_part,"done")==0){
-                    todo_group(todo,1);
+                    todo_group(todo,DONE);
                 }
                 else if(strcmp(first_part,"todo")==0){
-                    todo_group(todo,0);
+                    todo_group(todo,TODO);
                 }
                 else{
                     printf("wrong parameter\n");
@@ -180,7 +180,7 @@ void todo_add(ToDoList *todo){
     }
     memset(to_add->description,0,256);
     memmove(to_add->description,description,strlen(description));
-    to_add->completed = 0;
+    to_add->status = TODO;
     to_add->id = todo->last_id;
     to_add->priority = LOW;
     if(list_append(todo->tasklist,to_add)!=0){
@@ -202,15 +202,15 @@ void todo_remove(ToDoList *todo, int id){
         printf("Could not delete task\n");
     }
 }
-void todo_change(ToDoList *todo, int id, int completed){
+void todo_change(ToDoList *todo, int id, Status status){
     Task *to_change = (Task*)list_get(todo->tasklist,&id);
     if(to_change==NULL){
         printf("No such task\n");
     }
     else{
-        to_change->completed = completed;
+        to_change->status = status;
         todo_view(todo);
-        printf("Marked task %d as %s\n",id,completed ? "done" : "not done");
+        printf("Marked task %d as %s\n",id,status==DONE ? "done" : "not done");
     }
 }
 void todo_priority(ToDoList *todo, int id, int priority){
@@ -234,7 +234,7 @@ void todo_view(ToDoList *todo){
     Task *task = NULL;
     while(element!=NULL){
         task = (Task*)element->data;
-        printf("%s %d (%s priority):\n\t%s",(task->completed ? "DONE":"TODO"),
+        printf("%s %d (%s priority):\n\t%s",(task->status==DONE ? "DONE":"TODO"),
             task->id,
             (task->priority==HIGH ? "high" : (task->priority==MEDIUM ? "medium" : "low")),
             task->description);
@@ -253,7 +253,7 @@ void todo_commit(ToDoList *todo){
     Task *task = NULL;
     while(element!=NULL){
         task = (Task*)element->data;
-        fprintf(db,"%s%d\n%d\n",task->description,task->completed,task->priority);
+        fprintf(db,"%s%d\n%d\n",task->description,task->status,task->priority);
         element = element->next;
     }
     fclose(db);
@@ -285,7 +285,7 @@ void todo_readin(ToDoList *todo){
         }
         memset(to_add->description,0,256);
         memmove(to_add->description,description,strlen(description));
-        to_add->completed = completed;
+        to_add->status = completed ? DONE : TODO;
         to_add->id = todo->last_id;
         to_add->priority = priority;
         if(list_append(todo->tasklist,to_add)!=0){
@@ -315,7 +315,7 @@ void todo_group(ToDoList *todo, int first){
     list_init(not_done,NULL,NULL);
     while(list_shift(todo->tasklist,(void**)&data)==0){
         removed = (Task*)data;
-        if(removed->completed){
+        if(removed->status==DONE){
             list_append(done,removed);
         }
         else{
@@ -423,20 +423,22 @@ void todo_sort_priority(ToDoList *todo, Order order){
 }
 void todo_help(){
     printf("Type:\n");
-    printf("list               ===> to see your todo list\n");
-    printf("done x             ===> to mark item x as done\n");
-    printf("undo x             ===> to mark item x as not done\n");
-    printf("commit             ===> to save changes\n");
-    printf("clear              ===> to clear current list\n");
-    printf("add                ===> to add a new todo item\n");
-    printf("remove x           ===> to remove item x from todo list\n");
-    printf("first [done|todo]  ===> to display done or todo first\n");
-    printf("priority [asc|dsc] ===> to sort tasks by priority\n");
-    printf("high x             ===> to mark item x with high priority\n");
-    printf("medium x           ===> to mark item x with medium priority\n");
-    printf("low x              ===> to mark item x with low priority\n");
-    printf("readin             ===> to read in saved todo list again\n");
-    printf("renumerate         ===> to renumber the tasks so they start at 1\n");
-    printf("help               ===> to see the list of available commands\n");
-    printf("Ctrl+d             ===> to exit\n");
+    printf("list                   ===> to see your todo list\n");
+    printf("done x                 ===> to mark item x as done\n");
+    printf("undo x                 ===> to mark item x as not done\n");
+    printf("commit                 ===> to save changes\n");
+    printf("clear                  ===> to clear current list\n");
+    printf("add                    ===> to add a new todo item\n");
+    printf("remove x               ===> to remove item x from todo list\n");
+    printf("first [done|todo]      ===> to display done or todo first\n");
+    printf("priority [asc|dsc]     ===> to sort tasks by priority\n");
+    printf("only [done|todo]       ===> to only display done or not done tasks\n");
+    printf("only [low|medium|high] ===> to only display tasks with given priority\n");
+    printf("high x                 ===> to mark item x with high priority\n");
+    printf("medium x               ===> to mark item x with medium priority\n");
+    printf("low x                  ===> to mark item x with low priority\n");
+    printf("readin                 ===> to read in saved todo list again\n");
+    printf("renumerate             ===> to renumber the tasks so they start at 1\n");
+    printf("help                   ===> to see the list of available commands\n");
+    printf("Ctrl+d                 ===> to exit\n");
 }
