@@ -6,14 +6,14 @@ typedef enum Priority{HIGH,MEDIUM,LOW} Priority;
 typedef enum Order{ASC,DSC} Order;
 typedef enum Status{TODO,DONE} Status;
 
-typedef struct Task{
+typedef struct{
     char description[256];
     Status status;
     int id;
     Priority priority;
 }Task;
 
-typedef struct ToDoList{
+typedef struct{
     List *tasklist;
     char *db_path;
     int last_id;

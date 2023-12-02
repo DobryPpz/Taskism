@@ -4,12 +4,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-typedef struct Element{
+typedef struct{
     void *data;
     struct Element *next;
 }Element;
 
-typedef struct List{
+typedef struct{
     void (*destroy)(void *data);
     Element *head;
     Element *tail;
