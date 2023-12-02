@@ -86,6 +86,32 @@ void todo_run(ToDoList *todo){
                 }
             }
         }
+        else if(strcmp(first_part,"only")==0){
+            first_part = strtok(NULL," \t\n");
+            if(first_part==NULL){
+                printf("What only?\n");
+            }
+            else{
+                if(strcmp(first_part,"todo")==0){
+                    todo_only_status(todo,TODO);
+                }
+                else if(strcmp(first_part,"done")==0){
+                    todo_only_status(todo,DONE);
+                }
+                else if(strcmp(first_part,"low")==0){
+                    todo_only_priority(todo,LOW);
+                }
+                else if(strcmp(first_part,"medium")==0){
+                    todo_only_priority(todo,MEDIUM);
+                }
+                else if(strcmp(first_part,"high")==0){
+                    todo_only_priority(todo,HIGH);
+                }
+                else{
+                    printf("Wrong argument\n");
+                }
+            }
+        }
         else if(strcmp(first_part,"high")==0){
             first_part = strtok(NULL," \t\n");
             if(first_part==NULL){
@@ -432,14 +458,29 @@ void todo_only_status(ToDoList *todo, Status status){
     List *tasklist = todo->tasklist;
     Element *element = tasklist->head;
     Task *task = NULL;
-
+    while(element!=NULL){
+        task = (Task*)element->data;
+        if(task->status==status){
+            task_display(task);
+        }
+        element = element->next;
+    }
 }
 void todo_only_priority(ToDoList *todo, Priority priority){
     printf("\033[2J\033[H");
     if(todo->has_read==0){
         todo_readin(todo);
     }
-
+    List *tasklist = todo->tasklist;
+    Element *element = tasklist->head;
+    Task *task = NULL;
+    while(element!=NULL){
+        task = (Task*)element->data;
+        if(task->priority==priority){
+            task_display(task);
+        }
+        element = element->next;
+    }
 }
 void todo_help(){
     printf("Type:\n");
