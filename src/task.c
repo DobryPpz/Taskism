@@ -171,7 +171,6 @@ void todo_run(ToDoList *todo){
 void todo_add(ToDoList *todo){
     Task *to_add = NULL;
     char description[256] = {0};
-    int id;
     printf("Describe task:\n");
     fgets(description,256,stdin);
     description[255] = 0;

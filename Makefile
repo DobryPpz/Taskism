@@ -1,2 +1,2 @@
 all:
-	gcc `find . -type f -iname "*.c"` -o taskism
+	gcc `find . -type f -iname "*.c"` -Wall -o taskism
