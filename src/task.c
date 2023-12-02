@@ -15,6 +15,12 @@ int task_cmp(void *task, void *id){
     }
     return 1;
 }
+void task_display(Task *task){
+    printf("%s %d (%s priority):\n\t%s",(task->status==DONE ? "DONE":"TODO"),
+            task->id,
+            (task->priority==HIGH ? "high" : (task->priority==MEDIUM ? "medium" : "low")),
+            task->description);
+}
 int todo_init(ToDoList *todo, void (*destroy)(void*), char *db_path, int (*cmp)(void*, void*)){
     List *tasklist = NULL;
     if((tasklist=(List*)malloc(sizeof(List)))==NULL){
@@ -234,10 +240,7 @@ void todo_view(ToDoList *todo){
     Task *task = NULL;
     while(element!=NULL){
         task = (Task*)element->data;
-        printf("%s %d (%s priority):\n\t%s",(task->status==DONE ? "DONE":"TODO"),
-            task->id,
-            (task->priority==HIGH ? "high" : (task->priority==MEDIUM ? "medium" : "low")),
-            task->description);
+        task_display(task);
         element = element->next;
     }
 }
@@ -420,6 +423,23 @@ void todo_sort_priority(ToDoList *todo, Order order){
     free(mediums);
     free(highs);
     todo_view(todo);
+}
+void todo_only_status(ToDoList *todo, Status status){
+    printf("\033[2J\033[H");
+    if(todo->has_read==0){
+        todo_readin(todo);
+    }
+    List *tasklist = todo->tasklist;
+    Element *element = tasklist->head;
+    Task *task = NULL;
+
+}
+void todo_only_priority(ToDoList *todo, Priority priority){
+    printf("\033[2J\033[H");
+    if(todo->has_read==0){
+        todo_readin(todo);
+    }
+
 }
 void todo_help(){
     printf("Type:\n");
