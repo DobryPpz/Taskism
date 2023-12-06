@@ -498,6 +498,7 @@ void todo_help(){
     printf("high x                 ===> to mark item x with high priority\n");
     printf("medium x               ===> to mark item x with medium priority\n");
     printf("low x                  ===> to mark item x with low priority\n");
+    printf("like \"x\"             ===> to display tasks containing \"x\" substring\n");
     printf("readin                 ===> to read in saved todo list again\n");
     printf("renumerate             ===> to renumber the tasks so they start at 1\n");
     printf("help                   ===> to see the list of available commands\n");
