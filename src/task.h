@@ -1,6 +1,7 @@
 #ifndef TASK_H_
 #define TASK_H_
 #include "list.h"
+#include "stringutils.h"
 
 typedef enum Priority{HIGH,MEDIUM,LOW} Priority;
 typedef enum Order{ASC,DSC} Order;
@@ -39,6 +40,7 @@ void todo_renumerate(ToDoList *todo);
 void todo_sort_priority(ToDoList *todo, Order order);
 void todo_only_status(ToDoList *todo, Status status);
 void todo_only_priority(ToDoList *todo, Priority priority);
+void todo_like(ToDoList *todo, char *pattern);
 void todo_help();
 
 #endif
