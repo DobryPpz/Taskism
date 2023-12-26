@@ -171,6 +171,15 @@ void todo_run(ToDoList *todo){
                 todo_like(todo,first_part);
             }
         }
+        else if(strcmp(first_part,"regex")==0){
+            first_part = strtok(NULL," \t\n");
+            if(first_part==NULL){
+                printf("Unspecified pattern\n");
+            }
+            else{
+                todo_regex(todo,first_part);
+            }
+        }
         else if(strcmp(first_part,"first")==0){
             first_part = strtok(NULL," \t\n");
             if(first_part==NULL){
@@ -507,6 +516,29 @@ void todo_like(ToDoList *todo, char *pattern){
         element = element->next;
     }
 }
+void todo_regex(ToDoList *todo, char *pattern){
+    printf("\033[2J\033[H");
+    if(todo->has_read==0){
+        todo_readin(todo);
+    }
+    List *tasklist = todo->tasklist;
+    Element *element = tasklist->head;
+    Task *task = NULL;
+    regex_t r;
+    int result;
+    result = regcomp(&r,pattern,0);
+    if(result!=0){
+        printf("Could not parse pattern\n");
+        return;
+    }
+    while(element!=NULL){
+        task = (Task*)element->data;
+        if(regexec(&r,task->description,0,NULL,0)==0){
+            task_display(task);
+        }
+        element = element->next;
+    }
+}
 void todo_help(){
     printf("Type:\n");
     printf("list                   ===> to see your todo list\n");
@@ -524,6 +556,7 @@ void todo_help(){
     printf("medium x               ===> to mark item x with medium priority\n");
     printf("low x                  ===> to mark item x with low priority\n");
     printf("like \"x\"               ===> to display tasks containing \"x\" substring\n");
+    printf("regex r                ===> to display tasks that match r pattern\n");
     printf("readin                 ===> to read in saved todo list again\n");
     printf("renumerate             ===> to renumber the tasks so they start at 1\n");
     printf("help                   ===> to see the list of available commands\n");
