@@ -5,8 +5,8 @@
 #include <regex.h>
 
 typedef enum Priority{HIGH,MEDIUM,LOW} Priority;
-typedef enum Order{ASC,DSC} Order;
 typedef enum Status{TODO,DONE} Status;
+typedef enum Order{ASC,DSC} Order;
 
 typedef struct Task{
     char description[256];

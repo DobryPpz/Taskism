@@ -1,14 +1,13 @@
 build:
-	mkdir build
-	gcc -c src/list.c -Wall -o build/list.o
-	gcc -c src/main.c -Wall -o build/main.o
-	gcc -c src/stringutils.c -Wall -o build/stringutils.o
-	gcc -c src/task.c -Wall -o build/task.o
-	gcc build/list.o \
-	build/main.o \
-	build/stringutils.o \
-	build/task.o \
+	gcc -c src/list.c -Wall -o list.o
+	gcc -c src/main.c -Wall -o main.o
+	gcc -c src/stringutils.c -Wall -o stringutils.o
+	gcc -c src/task.c -Wall -o task.o
+	gcc list.o \
+	main.o \
+	stringutils.o \
+	task.o \
 	-o taskism
 clean:
-	rm -rf build
+	rm `find . -type f -iname "*.o"`
 	rm taskism

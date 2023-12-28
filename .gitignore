@@ -1,3 +1,4 @@
 taskism
 .vscode/
 build/
+*.o
