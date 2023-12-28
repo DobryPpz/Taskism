@@ -29,6 +29,7 @@ int todo_init(ToDoList *todo, void (*destroy)(void*), char *db_path, int (*cmp)(
 void todo_destroy(ToDoList *todo);
 void todo_run(ToDoList *todo);
 void todo_add(ToDoList *todo);
+void todo_change_dsc(ToDoList *todo, int id);
 void todo_remove(ToDoList *todo, int id);
 void todo_change(ToDoList *todo, int id, Status status);
 void todo_priority(ToDoList *todo, int id, int priority);

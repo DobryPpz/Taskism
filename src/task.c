@@ -162,6 +162,16 @@ void todo_run(ToDoList *todo){
                 todo_change(todo,param,0);
             }
         }
+        else if(strcmp(first_part,"change")==0){
+            first_part = strtok(NULL," \t\n");
+            if(first_part==NULL){
+                printf("Which to change?\n");
+            }
+            else{
+                sscanf(first_part,"%d",&param);
+                todo_change_dsc(todo,param);
+            }
+        }
         else if(strcmp(first_part,"like")==0){
             first_part = strtok(NULL," \t\n");
             if(first_part==NULL){
@@ -239,6 +249,22 @@ void todo_add(ToDoList *todo){
     todo->last_id += 1;
     todo_view(todo);
     printf("Task added successfully\n");
+}
+void todo_change_dsc(ToDoList *todo, int id){
+    Task *to_change = (Task*)list_get(todo->tasklist,&id);
+    char description[256] = {0};
+    if(to_change==NULL){
+        printf("No such task\n");
+    }
+    else{
+        printf("New description:\n");
+        fgets(description,256,stdin);
+        description[255] = 0;
+        memset(to_change->description,0,256);
+        memmove(to_change->description,description,strlen(description));
+        todo_view(todo);
+        printf("Changed description for task %d\n",id);
+    }
 }
 void todo_remove(ToDoList *todo, int id){
     Task *to_remove = NULL;
@@ -544,6 +570,7 @@ void todo_help(){
     printf("list                   ===> to see your todo list\n");
     printf("done x                 ===> to mark item x as done\n");
     printf("undo x                 ===> to mark item x as not done\n");
+    printf("change x               ===> to change x item's content\n");
     printf("commit                 ===> to save changes\n");
     printf("clear                  ===> to clear current list\n");
     printf("add                    ===> to add a new todo item\n");
